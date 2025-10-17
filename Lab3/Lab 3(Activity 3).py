@@ -26,15 +26,16 @@ def load_dino(filename):
 # Global dinosaur data
 dino_polylines = []
 
-# === Drawing Functions ===
+# === DRAW DINOSAUR ===
 def draw_dino():
-    glColor3f(1.0, 0.4, 0.7)  # PINK dinosaur (R,G,B)
+    glColor3f(1.0, 0.4, 0.7)  # PINK dinosaur
     for poly in dino_polylines:
         glBegin(GL_LINE_STRIP)
         for (xw, yw) in poly:
             glVertex2f(xw, yw)
         glEnd()
 
+# === DISPLAY FUNCTION ===
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
 
@@ -43,14 +44,16 @@ def display():
 
     for i in range(cols):
         for j in range(rows):
+            # set viewport for each tile
             glViewport(i * tile_w, j * tile_h, tile_w, tile_h)
 
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
 
-            if (i + j) % 2 == 0:  # upright
+            # flip alternate tiles vertically
+            if (i + j) % 2 == 0:
                 gluOrtho2D(Wleft, Wright, Wbottom, Wtop)
-            else:  # flipped vertically
+            else:
                 gluOrtho2D(Wleft, Wright, Wtop, Wbottom)
 
             glMatrixMode(GL_MODELVIEW)
@@ -60,7 +63,19 @@ def display():
 
     glFlush()
 
-# === Main Setup ===
+# === RESHAPE FUNCTION ===
+def reshape(w, h):
+    global WIDTH, HEIGHT
+    WIDTH, HEIGHT = w, h          # update global size
+    glViewport(0, 0, w, h)        # define full drawing area
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluOrtho2D(0, w, 0, h)        # adjust coordinate system to new size
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    glutPostRedisplay()           # force redraw after resize
+
+# === MAIN SETUP ===
 def main():
     global dino_polylines
     dino_polylines = load_dino("C:/Users/PMLS/Desktop/ComputerGraphics/Lab3/dino.dat")
@@ -71,6 +86,7 @@ def main():
     glutCreateWindow(b"Dinosaur Tiling with Flipping")
     glClearColor(0, 0, 0, 1)
     glutDisplayFunc(display)
+    glutReshapeFunc(reshape)      # <-- added here
     glutMainLoop()
 
 if __name__ == "__main__":

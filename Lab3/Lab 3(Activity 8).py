@@ -64,7 +64,7 @@ def reshape(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluOrtho2D(-300, 300, -300, 300)
+    gluOrtho2D(-300, w, -300, h)
 
 
 def main():

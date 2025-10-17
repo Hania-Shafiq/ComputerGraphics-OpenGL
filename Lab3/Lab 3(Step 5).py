@@ -55,8 +55,25 @@ def display():
 def reshape(w, h):
     global width, height
     width, height = w, h
-    setViewport(50, w - 50, 50, h - 50)
-    setWindow(world_left, world_right, world_bottom, world_top)
+    glViewport(0, 0, w, h)  # Full window as viewport
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+
+    # Maintain aspect ratio of world window
+    aspect = w / h if h != 0 else 1
+    world_width = world_right - world_left
+    world_height = world_top - world_bottom
+
+    if aspect >= 1:
+        # window is wider
+        gluOrtho2D(world_left * aspect, world_right * aspect, world_bottom, world_top)
+    else:
+        # window is taller
+        gluOrtho2D(world_left, world_right, world_bottom / aspect, world_top / aspect)
+
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
 
 def keyboard(key, x, y):
     global shape_color, world_left, world_right, world_bottom, world_top
@@ -115,6 +132,6 @@ if __name__ == "__main__":
 # r → change shape color to red
 # g → change shape color to green
 # b → change shape color to blue
-# z → zoom in (shrink world window)
-# x → zoom out (expand world window)
+# i → zoom in (shrink world window)
+# o → zoom out (expand world window)
 # q → quit program

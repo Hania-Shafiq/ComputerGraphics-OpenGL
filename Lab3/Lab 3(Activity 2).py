@@ -5,13 +5,9 @@ from OpenGL.GLU import *
 # Window size
 WIDTH, HEIGHT = 800, 600
 
-# World Window (approx range of dino data)
+# World Window (fixed for all tiles)
 Wleft, Wright = 0, 640
 Wbottom, Wtop = 0, 480
-
-# Viewport (where dinosaur will be drawn on screen)
-Vleft, Vright = 50, 750
-Vbottom, Vtop = 50, 550
 
 
 # --- LOAD DINO POLYLINES FROM FILE ---
@@ -33,45 +29,52 @@ def load_dino(filepath):
 dino_polylines = load_dino("C:\\Users\\PMLS\\Desktop\\ComputerGraphics\\Lab3\\dino.dat")
 
 
-# --- WORLD TO VIEWPORT MAPPING ---
-def map_to_viewport(xw, yw):
-    xv = ((xw - Wleft) / (Wright - Wleft)) * (Vright - Vleft) + Vleft
-    yv = ((yw - Wbottom) / (Wtop - Wbottom)) * (Vtop - Vbottom) + Vbottom
-    return xv, yv
+# --- DRAW DINO IN CURRENT VIEWPORT ---
+def draw_dino():
+    glColor3f(1.0, 0.75, 0.8)  # Pink dinosaur
+    for poly in dino_polylines:
+        glBegin(GL_LINE_STRIP)
+        for (xw, yw) in poly:
+            glVertex2f(xw, yw)
+        glEnd()
 
 
 # --- DISPLAY FUNCTION ---
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
 
-    # Draw viewport border (Purple)
-    glColor3f(0.5, 0.0, 0.5)
-    glBegin(GL_LINE_LOOP)
-    glVertex2f(Vleft, Vbottom)
-    glVertex2f(Vright, Vbottom)
-    glVertex2f(Vright, Vtop)
-    glVertex2f(Vleft, Vtop)
-    glEnd()
+    # 5x5 tiling
+    for i in range(5):  # columns
+        for j in range(5):  # rows
+            # Each viewport cell (scaled to fit window)
+            glViewport(i * (WIDTH // 5), j * (HEIGHT // 5), WIDTH // 5, HEIGHT // 5)
 
-    # Draw dinosaur polylines (Pink)
-    glColor3f(1.0, 0.75, 0.8)
-    for poly in dino_polylines:
-        glBegin(GL_LINE_STRIP)
-        for (xw, yw) in poly:
-            xv, yv = map_to_viewport(xw, yw)
-            glVertex2f(xv, yv)
-        glEnd()
+            # Reset projection for each viewport
+            glMatrixMode(GL_PROJECTION)
+            glLoadIdentity()
+            gluOrtho2D(Wleft, Wright, Wbottom, Wtop)
+            glMatrixMode(GL_MODELVIEW)
+            glLoadIdentity()
+
+            # Draw the dinosaur in this tile
+            draw_dino()
 
     glFlush()
 
 
 # --- RESHAPE FUNCTION ---
+
+# === RESHAPE FUNCTION ===
 def reshape(w, h):
-    glViewport(0, 0, w, h)
+    global WIDTH, HEIGHT
+    WIDTH, HEIGHT = w, h          # update global size
+    glViewport(0, 0, w, h)        # define full drawing area
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluOrtho2D(0, w, 0, h)
+    gluOrtho2D(0, w, 0, h)        # adjust coordinate system to new size
     glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    glutPostRedisplay()           # force redraw after resize
 
 
 # --- MAIN FUNCTION ---
@@ -79,7 +82,7 @@ def main():
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
     glutInitWindowSize(WIDTH, HEIGHT)
-    glutCreateWindow(b"DinoPolyLines - World to Viewport Mapping")
+    glutCreateWindow(b"Dinosaur Multi-Tiling Viewports")
 
     glClearColor(0.0, 0.0, 0.0, 1.0)
 
