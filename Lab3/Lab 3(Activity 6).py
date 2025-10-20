@@ -1,5 +1,4 @@
 # Lab Activity 6: Drawing Parameterized Regular Polygon (n-gon)
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -7,7 +6,6 @@ import math
 
 # Window size
 width, height = 500, 500
-
 
 def ngon(n, cx, cy, r, theta):
     """Draw a regular n-gon centered at (cx,cy) with radius r and rotation theta (degrees)."""
@@ -27,16 +25,14 @@ def init():
     glLoadIdentity()
     gluOrtho2D(0, width, 0, height)   # 2D world window
 
-
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-
+   
     glColor3f(1.0, 1.0, 0.0)   # Red polygon
     ngon(8, 100, 100, 50, 45)  # Octagon rotated 45°
 
     glColor3f(0.0, 0.8, 1.0)   # Blue polygon
     ngon(6, 250, 250, 100, 0)  # Hexagon in center
-
 
     glColor3f(0.3, 0.6, 0.0)   # Green polygon
     ngon(30, 400, 100, 70, 0)  # Approximates a circle
@@ -55,8 +51,6 @@ def reshape(w, h):
     glLoadIdentity()
     glutPostRedisplay()           # force redraw after resize
 
-
-
 def main():
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
@@ -67,7 +61,5 @@ def main():
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glutMainLoop()
-
-
 if __name__ == "__main__":
     main()

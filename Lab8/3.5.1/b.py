@@ -1,8 +1,13 @@
 import turtle
 
+# --- SETUP TURTLE ---
+t = turtle.Turtle()
+t.speed(0)
+t.pensize(4)
+t.color("purple")
+
+# --- DRAW FIGURE B (SPIRAL SQUARE) ---
 def figure_b(length=20, increment=15, turns=20):
-    t = turtle.Turtle()
-    t.speed(0)
     t.penup()
     t.goto(0, 0)
     t.pendown()
@@ -11,7 +16,11 @@ def figure_b(length=20, increment=15, turns=20):
         t.right(90)
         length += increment
 
-if __name__ == "__main__":
-    wn = turtle.Screen()
-    figure_b(10, 10, 20)
-    wn.mainloop()
+# --- MAIN PROGRAM ---
+screen = turtle.Screen()
+screen.bgcolor("white")
+screen.setup(width=400, height=400)
+
+figure_b()
+t.hideturtle()
+turtle.done()

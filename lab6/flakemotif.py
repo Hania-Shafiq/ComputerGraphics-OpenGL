@@ -1,14 +1,16 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-import sys
 
 # Window size
-width, height = 600, 600
+WIDTH, HEIGHT = 600, 600
 
-# ------------------------------
+# Snowflake world coordinates
+Wleft, Wright = -80, 80
+Wbottom, Wtop = -80, 80
+
+
 # Flake motif (branch)
-# ------------------------------
 def flakeMotif():
     glBegin(GL_LINE_STRIP)
     glVertex2f(0, 5)
@@ -24,32 +26,26 @@ def flakeMotif():
     glVertex2f(60, 0)
     glEnd()
 
-# ------------------------------
 # Draw Snowflake (rotational symmetry)
-# ------------------------------
 def drawFlake():
-    for i in range(6):   # 6 branches around 360°
-        # draw branch
+    for i in range(6):   # 6 branches around 360°/6 = 60°
+        # Draw original branch
         flakeMotif()
-
-        # draw mirrored branch
+        # Draw mirrored branch
         glPushMatrix()
         glScalef(1.0, -1.0, 0)
         flakeMotif()
         glPopMatrix()
-
-        # rotate for next branch
+        # Rotate coordinate system for next branch
         glRotatef(60, 0, 0, 1)
 
-# ------------------------------
 # Display Function
-# ------------------------------
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
     glLoadIdentity()
 
-    glColor3f(0, 0, 0)   # black like in lab sheet
-    glLineWidth(2)
+    glColor3f(0.6, 0, 1)   # Purple color
+    glLineWidth(1)
 
     glPushMatrix()
     drawFlake()
@@ -57,28 +53,61 @@ def display():
 
     glFlush()
 
-# ------------------------------
+# Reshape Function
+def reshape(w, h):
+    global WIDTH, HEIGHT
+    WIDTH, HEIGHT = w, h
+
+    # Calculate aspect ratios
+    world_aspect = (Wright - Wleft) / (Wtop - Wbottom)
+    viewport_aspect = w / h
+    margin = 50
+
+    if viewport_aspect > world_aspect:
+        # Window wider → adjust width
+        new_width = (h - 2 * margin) * world_aspect
+        x_offset = (w - new_width) / 2
+        Vleft, Vright = x_offset, x_offset + new_width
+        Vbottom, Vtop = margin, h - margin
+    else:
+        # Window taller → adjust height
+        new_height = (w - 2 * margin) / world_aspect
+        y_offset = (h - new_height) / 2
+        Vleft, Vright = margin, w - margin
+        Vbottom, Vtop = y_offset, y_offset + new_height
+
+    # Projection matrix update
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluOrtho2D(Wleft, Wright, Wbottom, Wtop)
+
+    glViewport(int(Vleft), int(Vbottom), int(Vright - Vleft), int(Vtop - Vbottom))
+
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+
+    glutPostRedisplay()
+
 # Main
-# ------------------------------
 def main():
-    glutInit(sys.argv)
+    glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-    glutInitWindowSize(width, height)
+    glutInitWindowSize(WIDTH, HEIGHT)
     glutInitWindowPosition(100, 100)
     glutCreateWindow(b"Snowflake - Rotational Symmetry")
 
-    # White background
-    glClearColor(1, 1, 1, 1)
+    glClearColor(1, 0.5, 0.5, 1)  # Light pink background
 
-    # Setup projection (cover enough space for motif up to x=60)
+    # Initial projection
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluOrtho2D(-80, 80, -80, 80)
+    gluOrtho2D(Wleft, Wright, Wbottom, Wtop)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
     glutDisplayFunc(display)
+    glutReshapeFunc(reshape)
     glutMainLoop()
 
 if __name__ == "__main__":

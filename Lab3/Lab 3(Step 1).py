@@ -9,7 +9,7 @@ from OpenGL.GLU import *
 width, height = 500, 500
 
 def init():
-    glClearColor(1.0, 1.0, 1.0, 1.0)  # White background
+    glClearColor(1.0, .3, .3, .0)  # Pinkish background
     glColor3f(0.0, 0.0, 0.0)          # Black drawing color
     glPointSize(5.0)                  # Point size
     glMatrixMode(GL_PROJECTION)
@@ -45,6 +45,7 @@ def keyboard(key, x, y):
 def main():
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    
     glutInitWindowSize(width, height)
     glutInitWindowPosition(100, 100)
     glutCreateWindow(b"Step 1")

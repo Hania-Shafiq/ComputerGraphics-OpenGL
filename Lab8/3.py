@@ -13,6 +13,7 @@ def forward(d, visible=True):
         t.pendown()
 
 def turn(angle):
+    
     t.left(angle)
 
 # shorthand commands
@@ -24,5 +25,5 @@ for c in commands:
         turn(60)
     elif c == 'R':
         turn(-60)
-
+t.hideturtle()
 turtle.done()

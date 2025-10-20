@@ -32,16 +32,6 @@ def draw_trapezoid(x1, y1, x2, y2, x3, y3, x4, y4, color):
     glVertex2f(x4, y4)  # Top-left
     glEnd()
 
-# Utility: Draw parallelogram from one point with given width, height, slant
-def draw_parallelogram(x, y, width, height, slant, color):
-    glColor3f(*color)
-    glBegin(GL_QUADS)
-    glVertex2f(x + slant, y)             # Bottom-left
-    glVertex2f(x + width + slant, y)     # Bottom-right
-    glVertex2f(x + width, y + height)    # Top-right
-    glVertex2f(x, y + height)            # Top-left
-    glEnd()
-
 def draw_scene():
     glClear(GL_COLOR_BUFFER_BIT)
 

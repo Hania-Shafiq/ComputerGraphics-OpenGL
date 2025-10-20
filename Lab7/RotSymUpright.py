@@ -21,30 +21,15 @@ def load_dino(filename):
             polylines.append(points)
     return polylines
 
-
 # ---------------- Global Vars ----------------
 dino_polylines = []
-center_x, center_y = 0, 0
-
-
-# ---------------- Compute Center ----------------
-def compute_center():
-    global center_x, center_y
-    xs, ys = [], []
-    for poly in dino_polylines:
-        for (x, y) in poly:
-            xs.append(x)
-            ys.append(y)
-    center_x = (min(xs) + max(xs)) / 2
-    center_y = (min(ys) + max(ys)) / 2
-
+center_x, center_y = 0, 0 # Dino’s local center
 
 # ---------------- Draw Single Dino ----------------
 def draw_dino():
     glPushMatrix()
-    glTranslatef(-center_x, -center_y, 0)
+    glTranslatef(center_x, center_y, 0)
     glScalef(0.22, 0.22, 1.0)
-
     glColor3f(1.0, 1.0, 0.0)
     for poly in dino_polylines:
         glBegin(GL_LINE_STRIP)
@@ -53,30 +38,25 @@ def draw_dino():
         glEnd()
     glPopMatrix()
 
-
 # ---------------- Rotational Symmetry ----------------
 def transform_dinos():
     num_dinos = 12
     radius = 250.0
 
     for i in range(num_dinos):
+        theta = i * (360 / num_dinos)
         glPushMatrix()
-        glRotatef(i * (360 / num_dinos), 0, 0, 1)
-        glTranslatef(0.0, radius, 0.0)
-        glRotatef(-i * (360 / num_dinos), 0, 0, 1)
+        glRotatef(theta, 0, 0, 1)      # rotate by theta around origin
+        glTranslatef(0.0, radius, 0.0) # move outward along local Y
+        glRotatef(-theta, 0, 0, 1)     # rotate back so dino stays upright
         draw_dino()
         glPopMatrix()
-
 
 # ---------------- Display Function ----------------
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    glTranslatef(0.0, 50.0, 0.0)  # slight upward shift
     transform_dinos()
     glFlush()
-
 
 # ---------------- Reshape Function ----------------
 def reshape(width, height):
@@ -85,36 +65,30 @@ def reshape(width, height):
     aspect = width / height
 
     glViewport(0, 0, width, height)
-
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-
-    view_size = 500  # controls zoom
+    view_size = 500
     if aspect >= 1:
         gluOrtho2D(-view_size * aspect, view_size * aspect, -view_size, view_size)
     else:
         gluOrtho2D(-view_size, view_size, -view_size / aspect, view_size / aspect)
-
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-
 
 # ---------------- Main ----------------
 def main():
     global dino_polylines
-    dino_polylines = load_dino("dinopart2/dino.dat")
-    compute_center()
+    dino_polylines = load_dino("C:\\Users\\PMLS\\Desktop\\ComputerGraphics\\Lab3\\dino.dat")
 
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
     glutInitWindowSize(WIDTH, HEIGHT)
-    glutCreateWindow(b"Rotational Symmetry of Dinosaurs - Centered & Resizable")
+    glutCreateWindow(b"Rotational Symmetry of Dinosaurs - Upright Circular")
     glClearColor(0, 0, 0, 1)
 
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glutMainLoop()
-
 
 if __name__ == "__main__":
     main()

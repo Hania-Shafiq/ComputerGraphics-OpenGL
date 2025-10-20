@@ -11,8 +11,8 @@ strokes = []          # store drawn points
 
 def init():
     glClearColor(1.0, 1.0, 1.0, 1.0)   # White background
-    glColor3f(0.0, 0.0, 0.0)           # Black brush
-    glPointSize(10.0)                  # Fat brush size
+    glColor3f(0.0, 1.0, 0.0)           # green brush
+    glPointSize(7.0)                  # Fat brush size
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, width, 0, height)    # 2D orthographic projection

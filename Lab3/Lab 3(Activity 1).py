@@ -2,30 +2,30 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-# Window size
-WIDTH, HEIGHT = 800, 600
+# Window size OpenGL
+WIDTH, HEIGHT = 800, 800
 
 # World Window (approx range of dino data)
-Wleft, Wright = 0, 640
-Wbottom, Wtop = 0, 480
+Wleft, Wright = 0, 640 #x
+Wbottom, Wtop = 0, 480 #y
 
 # Viewport (where dinosaur will be drawn on screen)
-Vleft, Vright = 50, 750
-Vbottom, Vtop = 50, 550
+Vleft, Vright = 50, 750 #x   #give a little margin
+Vbottom, Vtop = 50, 550 #y
 
 
 # --- LOAD DINO POLYLINES FROM FILE ---
 def load_dino(filepath):
-    polylines = []
-    with open(filepath, "r") as f:
-        num_polylines = int(f.readline().strip())
-        for _ in range(num_polylines):
-            n = int(f.readline().strip())
-            points = []
-            for _ in range(n):
-                x, y = map(int, f.readline().split())
-                points.append((x, y))
-            polylines.append(points)
+    polylines = [] #polylines will store here
+    with open(filepath, "r") as f: #open file and close when complete 
+        num_polylines = int(f.readline().strip()) #read 1st line, remove extra spaces, convert to int
+        for _ in range(num_polylines): #loop will run no. of polylines times
+            n = int(f.readline().strip())  #read no. of points in current polyline
+            points = [] #list to store points of current polyline
+            for _ in range(n): #loop to read each point
+                x, y = map(int, f.readline().split()) #read x,y coordinates, split by space, convert to int eg points = [(10,10), (20,30), (40,30), (60,10), (10,10)]
+                points.append((x, y)) #add point to points list
+            polylines.append(points) #add current polyline to polylines list
     return polylines
 
 
@@ -35,6 +35,7 @@ dino_polylines = load_dino("C:\\Users\\PMLS\\Desktop\\ComputerGraphics\\Lab3\\di
 
 # --- WORLD TO VIEWPORT MAPPING ---
 def map_to_viewport(xw, yw):
+    
     xv = ((xw - Wleft) / (Wright - Wleft)) * (Vright - Vleft) + Vleft
     yv = ((yw - Wbottom) / (Wtop - Wbottom)) * (Vtop - Vbottom) + Vbottom
     return xv, yv
@@ -43,7 +44,6 @@ def map_to_viewport(xw, yw):
 # --- DISPLAY FUNCTION ---
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-
     # Draw viewport border (Purple)
     glColor3f(0.5, 0.0, 0.5)
     glBegin(GL_LINE_LOOP)
@@ -64,15 +64,11 @@ def display():
 
     glFlush()
 
-
-# --- RESHAPE FUNCTION ---
-
-# === RESHAPE FUNCTION ===
 # === Reshape Function (Preserve Aspect Ratio) ===
 def reshape(w, h):
     global Vleft, Vright, Vbottom, Vtop
 
-    glViewport(0, 0, w, h)
+    glViewport(0, 0, w, h) 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, w, 0, h)
@@ -80,12 +76,12 @@ def reshape(w, h):
 
     # Maintain Dino's aspect ratio (based on world window)
     world_aspect = (Wright - Wleft) / (Wtop - Wbottom)
-    window_aspect = w / h
+    window_aspect = w / h #vp
 
     margin = 50
 
     if window_aspect > world_aspect:
-        # Window is wider → adjust width to keep ratio
+        # Window is wider than world  → adjust width to keep ratio
         new_width = (h - 2 * margin) * world_aspect
         x_offset = (w - new_width) / 2
         Vleft, Vright = x_offset, x_offset + new_width

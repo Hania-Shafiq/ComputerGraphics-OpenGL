@@ -2,14 +2,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-# ---------------------------
 # Global world window
-# ---------------------------
 world_left, world_right, world_bottom, world_top = 0, 640, 0, 480
 
-# ---------------------------
 # LOAD DINO DATA FROM FILE
-# ---------------------------
 def load_dino(filename):
     polylines = []
     with open(filename, "r") as f:
@@ -26,17 +22,7 @@ def load_dino(filename):
 # Global variable
 dino_polylines = []
 
-# ---------------------------
-# Helpers
-# ---------------------------
-def setWindow(left, right, bottom, top):
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluOrtho2D(left, right, bottom, top)
-
-def setViewport(left, right, bottom, top):
-    glViewport(left, bottom, right-left, top-bottom)
-
+# Draw Dinosaur
 def drawDino():
     glColor3f(1.0, 0.4, 0.7)  # pink lines
     for polyline in dino_polylines:
@@ -45,38 +31,39 @@ def drawDino():
             glVertex2f(x, y)
         glEnd()
 
-# ---------------------------
 # Display + Keyboard
-# ---------------------------
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-    setWindow(world_left, world_right, world_bottom, world_top)
-    setViewport(0, 640, 0, 480)
+    # Directly apply projection and viewport setup
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluOrtho2D(world_left, world_right, world_bottom, world_top)
+    glViewport(0, 0, 640, 480)
+    glMatrixMode(GL_MODELVIEW)  # → ab drawing (model) mode me shift ho gaye
+    glLoadIdentity() 
     drawDino()
     glFlush()
 
 def keyboard(key, x, y):
     global world_left, world_right, world_bottom, world_top
-    zoomFactor = 40
+    zoomFactor = 20
 
-    if key == b'z':  # zoom in
+    if key == b'+':  # zoom in
         world_left += zoomFactor
         world_right -= zoomFactor
         world_bottom += zoomFactor
         world_top -= zoomFactor
-    elif key == b'x':  # zoom out
+    elif key == b'-':  # zoom out
         world_left -= zoomFactor
         world_right += zoomFactor
         world_bottom -= zoomFactor
         world_top += zoomFactor
     elif key == b'r':  # reset
         world_left, world_right, world_bottom, world_top = 0, 640, 0, 480
-
+    elif key == b'c':
+        print(f"Key pressed at mouse position: ({x}, {y})")
     glutPostRedisplay()
 
-# ---------------------------
-# Main
-# ---------------------------
 def main():
     global dino_polylines
     dino_polylines = load_dino("C:/Users/PMLS/Desktop/ComputerGraphics/Lab3/dino.dat")

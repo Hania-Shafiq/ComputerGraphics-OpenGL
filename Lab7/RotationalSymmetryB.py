@@ -1,10 +1,11 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-import os
 
 # ---------------- Window Setup ----------------
 WIDTH, HEIGHT = 800, 600
+Wleft, Wright = 0, 635
+Wbottom, Wtop = 0, 439
 
 # ---------------- Load Dino Data ----------------
 def load_dino(filename):
@@ -20,26 +21,17 @@ def load_dino(filename):
             polylines.append(points)
     return polylines
 
+
 # ---------------- Global Vars ----------------
 dino_polylines = []
-center_x, center_y = 0, 0
-
-# ---------------- Compute Center ----------------
-def compute_center():
-    global center_x, center_y
-    xs, ys = [], []
-    for poly in dino_polylines:
-        for (x, y) in poly:
-            xs.append(x)
-            ys.append(y)
-    center_x = (min(xs) + max(xs)) / 2
-    center_y = (min(ys) + max(ys)) / 2
+center_x, center_y = 0, 0 #where the dino will be drawn
 
 # ---------------- Draw Single Dino ----------------
 def draw_dino():
-    glPushMatrix()
-    glTranslatef(-center_x, -center_y, 0)
-    glScalef(0.22, 0.22, 1.0)
+    glPushMatrix()  
+    glTranslatef(center_x, center_y, 0) #Moves the dino to screen center before scaling.
+    glScalef(0.22, 0.22, 1.0) #→ scales down the dino (22% of original size).
+
     glColor3f(1.0, 1.0, 0.0)
     for poly in dino_polylines:
         glBegin(GL_LINE_STRIP)
@@ -48,63 +40,55 @@ def draw_dino():
         glEnd()
     glPopMatrix()
 
-# ---------------- Rotational Symmetry (Facing Outwards) ----------------
-def transform_dinos_outward():
-    num_dinos = 12
-    radius = 250.0
-    step_angle = 360 / num_dinos
 
+# ---------------- Rotational Symmetry ----------------
+def transform_dinos():
+    num_dinos = 12
+    radius = 200.0
     for i in range(num_dinos):
+        theta = i * (360 / num_dinos)
         glPushMatrix()
-        # Rotate around origin to place each dino
-        glRotatef(i * step_angle, 0, 0, 1)
-        # Move dino outward from center
+        glRotatef(theta, 0, 0, 1)      # rotate by theta around origin
         glTranslatef(0.0, radius, 0.0)
-        # Rotate so dino faces outward (away from center)
-        glRotatef(90 + i * 0, 0, 0, 1)
         draw_dino()
         glPopMatrix()
 
 # ---------------- Display Function ----------------
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    transform_dinos_outward()
+    transform_dinos()
     glFlush()
+
 
 # ---------------- Reshape Function ----------------
 def reshape(width, height):
     if height == 0:
         height = 1
     aspect = width / height
+
     glViewport(0, 0, width, height)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    view_size = 500
+
+    view_size = 500  # controls zoom
     if aspect >= 1:
         gluOrtho2D(-view_size * aspect, view_size * aspect, -view_size, view_size)
     else:
         gluOrtho2D(-view_size, view_size, -view_size / aspect, view_size / aspect)
+
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
-# ---------------- Main ----------------
-import os
 
+# ---------------- Main ----------------
 def main():
     global dino_polylines
-
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    DATA_FILE = os.path.join(BASE_DIR, "dino.dat")
-
-    dino_polylines = load_dino(DATA_FILE)
-    compute_center()
-
+    dino_polylines = load_dino("C:\\Users\\PMLS\\Desktop\\ComputerGraphics\\Lab3\\dino.dat")
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
     glutInitWindowSize(WIDTH, HEIGHT)
-    glutCreateWindow(b"Dino Circle Facing Outwards")
+    glutCreateWindow(b"Rotational Symmetry of Dinosaurs - Centered & Resizable")
     glClearColor(0, 0, 0, 1)
 
     glutDisplayFunc(display)

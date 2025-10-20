@@ -22,7 +22,7 @@ def draw_circle(cx, cy, r, segments=200):
 
 def init():
     glClearColor(1, 1, 1, 1)  # white background
-    glColor3f(0, 0, 0)        # black circle
+    glColor3f(0, 1, 0)        # green circle
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, width, 0, height)  # 2D projection
