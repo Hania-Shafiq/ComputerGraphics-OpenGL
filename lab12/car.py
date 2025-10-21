@@ -8,19 +8,19 @@ car_pos = 0.0  # Centered at origin
 wheel_angle = 0.0
 animation_running = False
 
-def draw_filled_circle(cx, cy, r, num_segments):
+def draw_filled_circle(cx, cy, r, segments):
     glBegin(GL_POLYGON)
-    for i in range(num_segments):
-        angle = math.radians(360 * i / num_segments)
+    for i in range(segments):
+        angle = 2*math.pi* i / segments
         x = cx + r * math.cos(angle)
         y = cy + r * math.sin(angle)
         glVertex2f(x, y)
     glEnd()
 
-def draw_filled_arc(cx, cy, r, start_angle, end_angle, num_segments):
+def draw_filled_arc(cx, cy, r, start_angle, end_angle, segments):
     glBegin(GL_POLYGON)
-    for i in range(num_segments + 1):
-        angle = math.radians(start_angle + (end_angle - start_angle) * i / num_segments)
+    for i in range(segments + 1):
+        angle = math.radians(start_angle + (end_angle - start_angle) * i / segments)
         x = cx + r * math.cos(angle)
         y = cy + r * math.sin(angle)
         glVertex2f(x, y)
@@ -123,6 +123,7 @@ def menu_control(value):
         glutTimerFunc(50, animate, 0)
     elif value == 3:  # Exit
         sys.exit(0)
+        quit()
     elif value == 4:  # Stop
         animation_running = False
     glutPostRedisplay()
@@ -151,3 +152,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Hierarchical Structure
+
+# Car (root)
+
+# Body (rectangle + dome + arcs)
+
+# Left Wheel (child → rotate on its axis)
+
+# Right Wheel (child → rotate on its axis)
+
+# Important:
+
+# Wheels rotate relative to car position
+
+# Car moves on X-axis, wheels spin — hierarchical animation

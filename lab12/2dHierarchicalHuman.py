@@ -91,7 +91,7 @@ def human():
     draw_square()
     glPopMatrix()
 
-        #FOOT
+    #FOOT
     glPushMatrix()
     glScalef(0.3,0.2,1)
     glTranslatef(-1,-13.3, 0) 

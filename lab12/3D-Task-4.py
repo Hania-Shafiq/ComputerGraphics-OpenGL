@@ -13,34 +13,7 @@ def init():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glEnable(GL_DEPTH_TEST)
 
-# def display():
-#     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-#     glMatrixMode(GL_PROJECTION)
-#     glLoadIdentity()
-#     glOrtho(-10, 10, -10, 10, -20, 20)  # 3D coordinate system
-
-#     glMatrixMode(GL_MODELVIEW)
-#     glLoadIdentity()
-#     gluLookAt(0.0, 0.0, eye_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)  # Camera position and orientation
-
-#     glColor3f(0.0, 1.0, 0.0)  # Green color for objects
-#     glPushMatrix()
-#     glutWireCube(2.0)
-#     glPopMatrix()
-
-#     glPushMatrix()
-#     glTranslatef(2.0, 0.0, 0.0)
-#     glutWireSphere(1.0, 20, 20)
-#     glPopMatrix()
-
-#     glPushMatrix()
-#     glTranslatef(-2.0, 0.0, 0.0)
-#     glutWireTeapot(1.0)
-#     glPopMatrix()
-
-#     glFlush()
-
-
+#2nd version with orbiting camera
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glMatrixMode(GL_PROJECTION)
@@ -88,9 +61,9 @@ def keyboard(key, x, y):
     global eye_z
     if key == b'q':
         sys.exit(0)
-    elif key == b'e':
+    elif key == b'+':
         eye_z += 0.5
-    elif key == b'd':
+    elif key == b'-':
         eye_z -= 0.5
     glutPostRedisplay()
 

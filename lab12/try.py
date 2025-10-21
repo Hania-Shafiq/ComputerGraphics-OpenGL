@@ -2,11 +2,9 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
-import math
 
 # Global variables
 eye_z = 5.0
-theta = 0.0
 width, height = 800, 600
 
 def init():
@@ -14,73 +12,68 @@ def init():
     glEnable(GL_DEPTH_TEST)
 
 def display():
+    global eye_z
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(-10, 10, -10, 10, -20, 20)  # 3D coordinate system
+    # Increased z-range so zoom movement stays visible
+    glOrtho(-10, 10, -10, 10, -100, 100)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    gluLookAt(0.0, 0.0, eye_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)  # Camera position and orientation
 
-    glColor3f(0.0, 1.0, 0.0)  # Green color for objects
+    # Move the whole scene back/forth
+    glTranslatef(0.0, 0.0, -eye_z)
+
+    # Draw objects
+    glColor3f(1.0, 0.6, 0.0)
+
     glPushMatrix()
     glutWireCube(2.0)
     glPopMatrix()
 
     glPushMatrix()
-    glTranslatef(2.0, 0.0, 0.0)
+    glTranslatef(3.0, 0.0, 0.0)
     glutWireSphere(1.0, 20, 20)
     glPopMatrix()
 
     glPushMatrix()
-    glTranslatef(-2.0, 0.0, 0.0)
+    glTranslatef(-3.0, 0.0, 0.0)
     glutWireTeapot(1.0)
     glPopMatrix()
 
     glFlush()
 
 def reshape(w, h):
-    global width, height
     if h == 0:
         h = 1
-    width = w
-    height = h
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(-10, 10, -10, 10, -20, 20)
+    glOrtho(-10, 10, -10, 10, -100, 100)
     glMatrixMode(GL_MODELVIEW)
 
 def keyboard(key, x, y):
     global eye_z
     if key == b'q':
         sys.exit(0)
-    elif key == b'e':
-        eye_z += 0.5
-    elif key == b'd':
-        eye_z -= 0.5
+    elif key == b'e':   # move camera back (zoom out)
+        eye_z += 1.0
+    elif key == b'd':   # move camera forward (zoom in)
+        eye_z -= 1.0
     glutPostRedisplay()
-
-def animate(value):
-    global theta
-    theta += 5
-    if theta > 360:
-        theta -= 360
-    glutPostRedisplay()
-    glutTimerFunc(50, animate, 0)
 
 def main():
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH)
     glutInitWindowSize(width, height)
     glutInitWindowPosition(100, 100)
-    glutCreateWindow(b"3D Visualization")
+    glutCreateWindow(b"3D Visualization with Ortho Zoom")
     init()
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glutKeyboardFunc(keyboard)
-    glutTimerFunc(50, animate, 0)
     glutMainLoop()
 
 if __name__ == "__main__":

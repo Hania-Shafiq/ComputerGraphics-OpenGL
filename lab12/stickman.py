@@ -12,18 +12,18 @@ left_arm_angle = -30
 right_arm_angle = 30
 
 # ---- Skeleton position ----
-x_pos = 0.0
+x_pos = 0.0 #right/left movement
 
 def draw_joint(x, y):
-    """Draws a red joint (circle)"""
-    glColor3f(1, 0, 0)
+    """Draws a mehroon joint (circle)"""
+    glColor3f(0.5, 0, 0.0)
     glBegin(GL_POLYGON)
     for i in range(30):
         theta = 2 * math.pi * i / 30
         glVertex2f(x + 0.05 * math.cos(theta), y + 0.05 * math.sin(theta))
     glEnd()
 
-def draw_bone(x1, y1, x2, y2):
+def draw_bone(x1, y1, x2, y2): #draws connections joints
     """Draws a line (bone)"""
     glColor3f(0, 0, 0)
     glLineWidth(2)
@@ -32,7 +32,7 @@ def draw_bone(x1, y1, x2, y2):
     glVertex2f(x2, y2)
     glEnd()
 
-def draw_skeleton():
+def draw_skeleton(): #Draws full skeleton using hierarchical transformations.
     global body_angle, left_leg_angle, right_leg_angle, left_arm_angle, right_arm_angle, x_pos
 
     glPushMatrix()
@@ -50,9 +50,13 @@ def draw_skeleton():
     glPushMatrix()
     glTranslatef(0, 0.8, 0)
     glBegin(GL_LINE_LOOP)
+    #Approximates a circle using 40 points
     for i in range(40):
         theta = 2 * math.pi * i / 40
-        glVertex2f(0.0 + 0.3 * math.cos(theta), 0.5 + 0.3 * math.sin(theta))
+        #radius is 0.3
+        x=0.0 + 0.3 * math.cos(theta)
+        y=0.5 + 0.3 * math.sin(theta) #By adding +0.5, the circle center is 0.5 units above the neck, so the head sits on top of the neck, not overlapping it.
+        glVertex2f(x, y)
     glEnd()
     glPopMatrix()
 
@@ -154,3 +158,64 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Key	Function
+# a / d	Move whole skeleton left/right
+# w / s	Rotate upper body forward/back
+# j / k	Left leg forward/back
+# n / m	Right leg forward/back
+# u / i	Left arm up/down
+# o / p	Right arm up/down
+# r	Reset pose
+
+
+#SCENE GRAPH
+# Root (Translation: x_pos)
+# |
+# |-- Body (Rotation: body_angle)
+#     |
+#     |-- Hip Joint
+#     |
+#     |-- Spine -> Neck Joint
+#         |
+#         |-- Head
+#         |
+#         |-- Left Arm
+#         |    |
+#         |    |-- Upper Arm (Rotation: left_arm_angle)
+#         |    |
+#         |    |-- Elbow Joint
+#         |    |
+#         |    |-- Lower Arm (Rotation: left_arm_angle/2)
+#         |    |
+#         |    |-- Hand Joint
+#         |
+#         |-- Right Arm
+#              |
+#              |-- Upper Arm (Rotation: right_arm_angle)
+#              |
+#              |-- Elbow Joint
+#              |
+#              |-- Lower Arm (Rotation: right_arm_angle/2)
+#              |
+#              |-- Hand Joint
+#     |
+#     |-- Left Leg
+#     |    |
+#     |    |-- Upper Leg (Rotation: left_leg_angle)
+#     |    |
+#     |    |-- Knee Joint
+#     |    |
+#     |    |-- Lower Leg (Rotation: -left_leg_angle/2)
+#     |    |
+#     |    |-- Foot Joint
+#     |
+#     |-- Right Leg
+#          |
+#          |-- Upper Leg (Rotation: right_leg_angle)
+#          |
+#          |-- Knee Joint
+#          |
+#          |-- Lower Leg (Rotation: -right_leg_angle/2)
+#          |
+#          |-- Foot Joint
