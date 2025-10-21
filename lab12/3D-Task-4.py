@@ -13,17 +13,48 @@ def init():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glEnable(GL_DEPTH_TEST)
 
+# def display():
+#     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+#     glMatrixMode(GL_PROJECTION)
+#     glLoadIdentity()
+#     glOrtho(-10, 10, -10, 10, -20, 20)  # 3D coordinate system
+
+#     glMatrixMode(GL_MODELVIEW)
+#     glLoadIdentity()
+#     gluLookAt(0.0, 0.0, eye_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)  # Camera position and orientation
+
+#     glColor3f(0.0, 1.0, 0.0)  # Green color for objects
+#     glPushMatrix()
+#     glutWireCube(2.0)
+#     glPopMatrix()
+
+#     glPushMatrix()
+#     glTranslatef(2.0, 0.0, 0.0)
+#     glutWireSphere(1.0, 20, 20)
+#     glPopMatrix()
+
+#     glPushMatrix()
+#     glTranslatef(-2.0, 0.0, 0.0)
+#     glutWireTeapot(1.0)
+#     glPopMatrix()
+
+#     glFlush()
+
+
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(-10, 10, -10, 10, -20, 20)  # 3D coordinate system
+    glOrtho(-10, 10, -10, 10, -20, 20)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    gluLookAt(0.0, 0.0, eye_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)  # Camera position and orientation
+    # Orbiting camera
+    eye_x = 5.0 * math.cos(math.radians(theta))
+    eye_z = 5.0 * math.sin(math.radians(theta))
+    gluLookAt(eye_x, 0.0, eye_z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 
-    glColor3f(0.0, 1.0, 0.0)  # Green color for objects
+    glColor3f(0.0, 1.0, 0.0)
     glPushMatrix()
     glutWireCube(2.0)
     glPopMatrix()
@@ -40,6 +71,7 @@ def display():
 
     glFlush()
 
+    
 def reshape(w, h):
     global width, height
     if h == 0:

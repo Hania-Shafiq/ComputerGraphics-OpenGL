@@ -42,6 +42,18 @@ def draw_wheel():
         draw_filled_circle(sx, sy, small_r, 20)
 
 def draw_car():
+    # # Blue quad layer (forward and back per yellow arcs)
+    # glPushMatrix()
+    # glTranslatef(0.0, 0.125, 0.0)
+    # glColor3f(0.0, 0.0, 1.0)
+    # glBegin(GL_QUADS)
+    # glVertex2f(-0.25, -0.125)
+    # glVertex2f(0.25, -0.125)
+    # glVertex2f(0.25, 0.125)
+    # glVertex2f(-0.25, 0.125)
+    # glEnd()
+    # glPopMatrix()
+
     # Left yellow vertical semicircle (same height as rectangle, 0.25)
     glPushMatrix()
     glTranslatef(-0.25, 0.0, 0.0)
@@ -55,6 +67,7 @@ def draw_car():
     glColor3f(1.0, 1.0, 0.0)
     draw_filled_arc(0.0, 0, 0.25, 0, 180, 20)
     glPopMatrix()
+
 
   # Blue quad layer (forward and back per yellow arcs)
     glPushMatrix()
