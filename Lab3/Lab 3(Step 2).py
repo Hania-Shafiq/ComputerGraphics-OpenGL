@@ -35,6 +35,8 @@ def reshape(w, h):
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, w, 0, h)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
 
 def mouse(button, state, x, y):
     if state == GLUT_DOWN:
@@ -42,6 +44,11 @@ def mouse(button, state, x, y):
             # Save the clicked point and request redraw
             points.append((x, height - y))
             print(f"Placed dot at ({x}, {height - y})")
+            glutPostRedisplay()
+        elif button == GLUT_RIGHT_BUTTON:
+            # Clear all points and redraw
+            points.clear()
+            print("Screen cleared")
             glutPostRedisplay()
 
 def main():
