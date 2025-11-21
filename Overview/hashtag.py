@@ -3,8 +3,6 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 def drawHashtag():
-    glClear(GL_COLOR_BUFFER_BIT)
-
     # -------- THIN LINE --------
     glColor3f(0, 0, 1)  # Blue
     glLineWidth(1)      # Thin
@@ -38,7 +36,10 @@ def drawHashtag():
     glEnd()
     glDisable(GL_LINE_STIPPLE)
 
-    glFlush()
+def myDisplay():
+    glClear(GL_COLOR_BUFFER_BIT)  # Clear screen
+    drawHashtag()                 # Call the function to draw hashtags
+    glFlush()                     # Render everything
 
 def myInit():
     glClearColor(1, 1, 1, 0)  # White background
@@ -48,11 +49,16 @@ def myInit():
     glLoadIdentity()
     gluOrtho2D(0, 500, 0, 250)
 
-glutInit()
-glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-glutInitWindowSize(500, 250)
-glutInitWindowPosition(100, 100)
-glutCreateWindow(b"Hashtag Lines")
-glutDisplayFunc(drawHashtag)
-myInit()
-glutMainLoop()
+def main():
+    glutInit()
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInitWindowSize(500, 250)
+    glutInitWindowPosition(100, 100)
+    glutCreateWindow(b"Hashtag Lines")
+    glutDisplayFunc(myDisplay)  # Register myDisplay as callback
+    myInit()
+    glutMainLoop()
+
+# Run the program
+if __name__ == "__main__":
+    main()
