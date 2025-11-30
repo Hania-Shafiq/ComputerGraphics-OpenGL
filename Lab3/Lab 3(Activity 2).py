@@ -42,13 +42,13 @@ def display():
     # 5x5 tiling
     for i in range(5):  # columns
         for j in range(5):  # rows
-
+            glViewport(i * (WIDTH // 5), j * (HEIGHT // 5), WIDTH // 5, HEIGHT // 5) # (x, y, width, height)
             # Reset projection for each viewport
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
             gluOrtho2D(Wleft, Wright, Wbottom, Wtop) # fixed world window for all tiles
              # Each viewport cell (scaled to fit window)
-            glViewport(i * (WIDTH // 5), j * (HEIGHT // 5), WIDTH // 5, HEIGHT // 5) # (x, y, width, height)
+            
             glMatrixMode(GL_MODELVIEW)
             glLoadIdentity()
 

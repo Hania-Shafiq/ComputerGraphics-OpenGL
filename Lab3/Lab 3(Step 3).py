@@ -22,10 +22,17 @@ def display():
 
     # Draw strokes as points
     glColor3f(0.0, 0.0, 0.0)
-    glBegin(GL_POINTS)
+
+    #method 1: using GL_POINTS
+    # glBegin(GL_POINTS)
+    # for (x, y) in strokes:
+    #     glVertex2f(x, y)
+    # glEnd()
+    
+    #method 2: using small rectangles
     for (x, y) in strokes:
-        glVertex2f(x, y)
-    glEnd()
+        glRectf(x, y, x + 20, y + 20)
+
 
     glFlush()
 

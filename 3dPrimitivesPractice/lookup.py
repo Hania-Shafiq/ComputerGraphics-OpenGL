@@ -9,7 +9,7 @@ centerX, centerY, centerZ = 0.0, 0.0, 0.0
 # 🟢 CASE 1: Normal (Y-axis is UP)
 # 👉 Scene upright, teapot seedha
 # up vector = (0, 1, 0)
-#upX, upY, upZ = 0.0, 1.0, 0.0
+upX, upY, upZ = 0.0, 1.0, 0.0
 
 # 🔴 CASE 2: Upside Down (Y-axis DOWN)
 # 👉 Scene ulta ho jayega
@@ -19,7 +19,7 @@ centerX, centerY, centerZ = 0.0, 0.0, 0.0
 # 🔵 CASE 3: Side Tilted (X-axis UP)
 # 👉 Scene side pe rotate dikhega
 # up vector = (1, 0, 0)
-upX, upY, upZ = 1.0, 0.0, 0.0
+#upX, upY, upZ = 1.0, 0.0, 0.0
 
 def init():
     glClearColor(0.1, 0.1, 0.1, 1.0)
